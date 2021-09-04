@@ -1,6 +1,7 @@
 import { ChangeEvent, SyntheticEvent, useState } from "react"
 import { useRouter } from "next/router"
 import goTrueClient from "../utils/auth"
+import GoogleAuth from "../components/googleAuth"
 
 export default function LogInForm() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function LogInForm() {
     <div className="desert desert-up">
       <div className="content">
         <h2>Log In</h2>
+        <GoogleAuth />
         <form onSubmit={handleSubmit}>
           <div className="chunk">
             <label

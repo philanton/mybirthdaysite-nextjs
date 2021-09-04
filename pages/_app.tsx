@@ -46,7 +46,12 @@ export default function MyApp({ Component, router, pageProps }: AppProps) {
       path: '/forecast',
       wall_level: 1,
       name: 'weather',
-    }
+    },
+    {
+      path: '/signout',
+      wall_level: 1,
+      name: 'sign out',
+    },
   ];
 
   function updatePathes(loggedIn: boolean) {
