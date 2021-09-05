@@ -4,6 +4,7 @@ import supabase from '../utils/supabase'
 import Avatar from '../components/avatar'
 import useCheckbox from '../hooks/useCheckbox'
 import router from 'next/router'
+import goTrueClient from '../utils/auth'
 
 interface SurveyProps {
   session: Session;
@@ -18,11 +19,11 @@ export default function SurveyContent({ session }: SurveyProps) {
   const [city, setCity] = useState("");
   const [wishes, setWishes] = useState("");
 
-  const [beerOk, BeerCheckbox] = useCheckbox("beer");
-  const [vodkaOk, VodkaCheckbox] = useCheckbox("vodka");
-  const [whiskieOk, WhiskieCheckbox] = useCheckbox("whiskie");
-  const [wineOk, WineCheckbox] = useCheckbox("wine");
-  const [ginOk, GinCheckbox] = useCheckbox("gin");
+  const [beerOk, setBeerOk, BeerCheckbox] = useCheckbox("beer");
+  const [vodkaOk, setVodkaOk, VodkaCheckbox] = useCheckbox("vodka");
+  const [whiskieOk, setWhiskieOk, WhiskieCheckbox] = useCheckbox("whiskie");
+  const [wineOk, setWineOk, WineCheckbox] = useCheckbox("wine");
+  const [ginOk, setGinOk, GinCheckbox] = useCheckbox("gin");
 
   useEffect(() => {
     getProfile();
@@ -30,16 +31,27 @@ export default function SurveyContent({ session }: SurveyProps) {
 
   async function getProfile() {
     try {
-      const user = supabase.auth.user();
+      const user = goTrueClient.user();
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`first_name, last_name, phone, country, city, avatar_url`)
+        .select()
         .eq('id', user.id)
         .single()
 
       if (error && status !== 406) {
-        throw error
+        setAvatarUrl("");
+        setFirstName("");
+        setLastName("");
+        setPhone("");
+        setCountry("");
+        setCity("");
+        setBeerOk(false);
+        setVodkaOk(false);
+        setWhiskieOk(false);
+        setWineOk(false);
+        setGinOk(false);
+        setWishes("");
       }
 
       if (data) {
@@ -49,9 +61,15 @@ export default function SurveyContent({ session }: SurveyProps) {
         setPhone(data.phone);
         setCountry(data.country);
         setCity(data.city);
+        setBeerOk(data.beer_ok);
+        setVodkaOk(data.vodka_ok);
+        setWhiskieOk(data.whiskie_ok);
+        setWineOk(data.wine_ok);
+        setGinOk(data.gin_ok);
+        setWishes(data.wishes);
       }
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   }
 
@@ -73,6 +91,12 @@ export default function SurveyContent({ session }: SurveyProps) {
         phone,
         country,
         city,
+        beer_ok: beerOk,
+        vodka_ok: vodkaOk,
+        whiskie_ok: whiskieOk,
+        wine_ok: wineOk,
+        gin_ok: ginOk,
+        wishes,
         updated_at: new Date(),
         created_at: !data ? new Date() : data.created_at,
       }
@@ -87,7 +111,7 @@ export default function SurveyContent({ session }: SurveyProps) {
         router.replace('/profile');
       }
     } catch (error) {
-      alert(error.message)
+      console.log(error.message);
     }
   }
 

@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react"
+import Image from 'next/image'
 import supabase from '../utils/supabase'
 
 interface AvatarProps {
@@ -54,7 +55,7 @@ export default function Avatar({ url, size, onUpload }: AvatarProps) {
 
       onUpload(filePath)
     } catch (error) {
-      alert(error.message)
+      console.log(error.message)
     } finally {
       setUploading(false)
     }
@@ -70,7 +71,11 @@ export default function Avatar({ url, size, onUpload }: AvatarProps) {
           style={{width: size, height: size}}
         />
       ) : (
-        <div className="no-image" style={{ height: size, width: size }} />
+        <Image
+          src={require("../public/img/ducky_sunset.png")}
+          width={size}
+          height={size}
+        />
       )}
       <div style={{ width: size }}>
         <label className="btn btn-pr block" htmlFor="single">

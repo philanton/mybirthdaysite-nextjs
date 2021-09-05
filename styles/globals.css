@@ -223,15 +223,11 @@
   }
 
   .avatar {
-      @apply border-yellow-400 border-2 sm:border-4 rounded-2xl;
+      @apply border-yellow-400 bg-yellow-400 border-2 sm:border-4 rounded-2xl;
   }
 
   .avatar > .image {
       @apply object-cover rounded-t-xl rounded-b-none border-none text-3xl;
-  }
-
-  .avatar > .no-image {
-      @apply bg-indigo-200 rounded-t-xl text-3xl;
   }
 
   .avatar > div > .btn {

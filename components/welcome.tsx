@@ -9,11 +9,11 @@ export default function WelcomeContent() {
       {!saidNo && (
         <p className="text-center content">
           Hi there! If you received reference to this page then 
-            I want to see you on my birthday. 
-            I keep tradition to celebrate a birthday 
-            every goddamn year 
-            and this year I decided to invite y’all 
-            in the web format.
+          I want to see you on my birthday. 
+          I keep tradition to celebrate a birthday 
+          every goddamn year 
+          and this year I decided to invite y’all 
+          in the web format.
         </p>
       )}
       <div className={`chunk ${saidNo && "mt-20 sm:mt-30"}`}>
@@ -28,7 +28,7 @@ export default function WelcomeContent() {
         <div className="btn-box">
           {!saidNo ? (
             <>
-              <Link href="/login">
+              <Link href="/signup">
                 <a className="btn btn-pr">Yes</a>
               </Link>
               <button

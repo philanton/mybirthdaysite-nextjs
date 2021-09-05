@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-export default function useCheckbox(name: string): [boolean, React.FC] {
+export default function useCheckbox(name: string): [boolean, (value: boolean) => void, React.FC] {
   const [isChecked, setIsChecked] = useState(false);
 
   return [
     isChecked,
+    setIsChecked,
     () => (
       <div>
         <input
