@@ -1,0 +1,23 @@
+kind: pipeline
+name: default
+
+steps:
+- name: verify & build
+  image: node
+  commands:
+  - npm install
+  - npm run build
+  when:
+    branch:
+      exclude:
+      - main
+- name: build docker image
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_access_token
+    repo: philanton/mybirthdaysite
+    tags:
+      - ${DRONE_COMMIT:0:7}
