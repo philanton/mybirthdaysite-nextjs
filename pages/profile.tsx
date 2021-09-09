@@ -75,7 +75,7 @@ export default function SurveyContent({ session }: SurveyProps) {
 
   async function updateProfile(url?: string) {
     try {
-      const user = supabase.auth.user();
+      const user = goTrueClient.user();
 
       const { data } = await supabase
         .from('profiles')

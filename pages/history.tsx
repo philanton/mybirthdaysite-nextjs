@@ -30,7 +30,7 @@ export default function HistoryContent({ session }: HistoryProps) {
           </p>
           <div className="image">
             <Image
-              src={require("../public/img/birthday_tradition.jpg").default}
+              src={require("../public/img/first.jpg").default}
               alt=""
               layout="responsive"
               objectFit="cover"
@@ -47,9 +47,9 @@ export default function HistoryContent({ session }: HistoryProps) {
             </p>
             <div className="w-full ml-0 sm:ml-12 image">
               <Image
-                src={require("../public/img/event_preparation.jpg").default}
-                height={360}
-                width={540}
+                src={require("../public/img/second.jpg").default}
+                height={600}
+                width={500}
                 layout="responsive"
                 objectFit="cover"
                 alt=""
@@ -82,9 +82,9 @@ export default function HistoryContent({ session }: HistoryProps) {
                 and then some kind of individual remains, 
                 which everyone else is waiting for.
             </p>
-            <div className="w-1/2 sm:w-1/3 mr-6 sm:mr-12 image">
+            <div className="w-1/2 sm:w-1/3 mr-6 sm:ml-12 sm:mr-0 image">
               <Image
-                src={require("../public/img/arm_head.jpg").default}
+                src={require("../public/img/third.jpg").default}
                 width={200}
                 height={300}
                 layout="responsive"
@@ -107,7 +107,7 @@ export default function HistoryContent({ session }: HistoryProps) {
           </p>
           <div className="image">
             <Image
-              src={require("../public/img/happy_party.jpg").default}
+              src={require("../public/img/fourth.jpg").default}
               className="image"
               layout="responsive"
               objectFit="cover"
@@ -128,14 +128,23 @@ export default function HistoryContent({ session }: HistoryProps) {
             but these memories and emotions, 
             it's worth it...
           </p>
-          <div className="image">
-            <Image
-              src={require("../public/img/memories.jpg").default}
-              className="image"
-              layout="responsive"
-              objectFit="cover"
-              alt=""
-            />
+          <div className="flex items-center">
+            <div className="image">
+              <Image
+                src={require("../public/img/fifth.jpg").default}
+                width={1700}
+                height={1280}
+                alt=""
+              />
+            </div>
+            <div className="image ml-4">
+              <Image
+                src={require("../public/img/sixth.jpg").default}
+                width={960}
+                height={1280}
+                alt=""
+              />
+            </div>
           </div>
         </div>
         {!session && (

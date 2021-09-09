@@ -43,7 +43,7 @@ export default function Header(props: HeaderProps) {
         <h1>
           {isHomePage ?
             "Welcome to my Birthday Party" :
-            "My Birthday Party"}
+            "MyBirthdayParty#6"}
         </h1>
         <div className="icon-s">
           <Image

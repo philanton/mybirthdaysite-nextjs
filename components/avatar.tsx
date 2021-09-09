@@ -87,6 +87,7 @@ export default function Avatar({ url, size, onUpload }: AvatarProps) {
           accept="image/*"
           onChange={uploadAvatar}
           disabled={uploading}
+          className="w-0"
         />
       </div>
     </div>
