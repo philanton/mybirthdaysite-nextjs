@@ -66,8 +66,15 @@ export default function HomePage() {
             </div>
             <div className="paragraph">
               Everyone who fills in their profile 
-              automatically appears here below 
-              and can choose a place in the queue for playing music.
+              automatically appears here below.
+            </div>
+            <div className="paragraph">
+              At 4 o'clock on Sunday,
+              the opportunity to fill out the profile will disappear
+              and everyone who appeared here below
+              will have the opportunity to take turns
+              choosing their place in playing music
+              at the further celebration.
             </div>
             <div className="paragraph">
               If this doesn't interest you,
