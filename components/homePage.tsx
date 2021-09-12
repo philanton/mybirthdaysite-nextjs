@@ -1,18 +1,57 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
+import router from 'next/router'
 import supabase from '../utils/supabase'
 import ProfileCard, { CardProps } from './card'
+import { Session } from '@supabase/gotrue-js';
+
+interface CurrentMember {
+  isI: boolean;
+  queue: number;
+  stageName: string;
+}
 
 export default function HomePage() {
   const [time, setTime] = useState(new Date());
   const [data, setData] = useState([] as CardProps[]);
+  const [currentMember, setCurrentMember] = useState({} as CurrentMember);
+  const [buttons, setButtons] = useState([] as boolean[]);
 
-  const getProfiles = async () => {
+  const updateQueue = async () => {
+    const userId = supabase.auth.user().id;
     const { data, error } = await supabase
       .from('profiles')
-      .select('avatar_url, first_name, beer_ok, vodka_ok, whiskie_ok, wine_ok, gin_ok, wishes, created_at')
-      .order('created_at', { ascending: true });
+      .select()
+      .eq('id', userId)
+      .single()
+    
+    if (error) return
+
+    data.queue = currentMember.queue;
+    data.stage_name = currentMember.stageName;
+
+    const { error: err } = await supabase
+      .from('profiles')
+      .upsert(data, {
+        returning: 'minimal', 
+      });
+
+    if (err) {
+      console.log(err);
+    } else {
+      router.push('/')
+      setCurrentMember(Object.assign({}, currentMember, {isI: !currentMember.isI}));
+    }
+  };
+
+  const getProfiles = async () => {
+    const { data: dat, error } = await supabase
+      .from('profiles')
+      .select('id, avatar_url, first_name, beer_ok, vodka_ok, whiskie_ok, wine_ok, gin_ok, wishes, created_at, queue, stage_name')
+      .order('created_at', { ascending: true })
 
     if (error) return
+
+    const data = dat.sort((a, b) => a.queue - b.queue);
 
     setData(data.map(v => {
       return {
@@ -27,15 +66,32 @@ export default function HomePage() {
           "BASTARD"
         ),
         wishes: v.wishes,
+        queue: v.queue,
+        stageName: v.stage_name,
       };
-    }))
+    }));
+
+    const leftUsers = data.filter(v => v.queue === 0);
+    if (leftUsers.length > 0 && leftUsers[0].id === supabase.auth.user().id) {
+      setCurrentMember({
+        isI: true,
+        queue: leftUsers[0].queue,
+        stageName: leftUsers[0].stage_name
+      })
+    }
+
+    const inQueue = data.filter(v => v.queue !== 0).map(v => v.queue);
+    const queueButtons = Array
+      .from(Array(data.length).keys())
+      .map(v => !inQueue.includes(v + 1));
+    setButtons(queueButtons);
   };
 
   useEffect(() => {
     const interval = setInterval(() => setTime(new Date()), 1000);
     getProfiles();
     return () => clearInterval(interval);
-  }, [])
+  }, [currentMember.isI])
 
   return (
     <div className="desert desert-up">
@@ -47,40 +103,94 @@ export default function HomePage() {
           </div>
           <div className="chunk">
             <div className="paragraph">
-              Hello everyone, this is my birthday party #6,
-              and this page will contain 
-              all the relevant information about it.
+              As you can see above,
+              there is only a short time left,
+              less than 100 hours.
             </div>
             <div className="paragraph">
-              There is a countdown above,
-              and to put it simply,
-              we will meet at 16:00 on September 16 at KPI
-              (the exact location will appear here later).
+              So that you do not get bored,
+              I give each of you the opportunity
+              to create your own musical set,
+              which will become part of the larger that evening.
             </div>
             <div className="paragraph">
-              Everything will end on September 17th.
+              Below you will soon be able to choose
+              which one in turn you want your music to play.
+              In general, I think everything will stretch from 18:00 to 2:00,
+              that is, everyone will have up to 45 minutes,
+              and for example the 6th will play at about 9 o'clock.
             </div>
             <div className="paragraph">
-              You can also go to the profile in the menu,
-              and fill in the data.
+              The queue to choose now belongs to the one
+              who is the highest in the list below.
             </div>
             <div className="paragraph">
-              Everyone who fills in their profile 
-              automatically appears here below.
+              Well, my additional desire,
+              let those who have pop and rap be the first,
+              and techno closer to the end,
+              otherwise I'm not ready to listen
+              to the first before going to bed.
             </div>
             <div className="paragraph">
-              At 4 o'clock on Sunday,
-              the opportunity to fill out the profile will disappear
-              and everyone who appeared here below
-              will have the opportunity to take turns
-              choosing their place in playing music
-              at the further celebration.
-            </div>
-            <div className="paragraph">
-              If this doesn't interest you,
-              then the profile can be left blank.
+              I am waiting for you in telegram
+              with ready-made lists of links
+              to music videos from YouTube.
+              And I will repeat myself up to
+              a maximum of 45 minutes,
+              that is, up to 10-15 tracks.
             </div>
           </div>
+          {currentMember.isI && (
+            <div className="chunk border-indigo-400 rounded-3xl border-8 p-4">
+              <label className="lbl">Choose your place in the queue:</label>
+              <div className="flex flex-wrap">
+                {buttons.map((v, i) => v && !(currentMember.queue === i + 1) ?
+                  <button
+                    className="m-2 py-1 px-3 bg-indigo-400 text-white rounded-lg"
+                    key={i}
+                    onClick={() => setCurrentMember(Object.assign({}, currentMember, { queue: i + 1 }))}
+                  >
+                    {i + 1}
+                  </button> :
+                  <button
+                    className={
+                      `m-2 py-1 px-3 bg-indigo-${currentMember.queue !== i + 1 ? 2 : 3}00 text-indigo-400 
+                      rounded-lg border-indigo-400 border-2`
+                    }
+                    key={i}
+                    disabled
+                  >
+                    {i + 1}
+                  </button>
+                )}
+              </div>
+              <label
+                className="lbl"
+                htmlFor="stage"
+              >
+                Give a name for your stage:
+              </label>
+              <input
+                type="text"
+                id="stage"
+                placeholder="Boring"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setCurrentMember(Object.assign(
+                    {},
+                    currentMember,
+                    { stageName: e.target.value }
+                  ))
+                }}
+                value={currentMember.stageName}
+              />
+              <button
+                className="btn btn-pr m-auto"
+                onClick={updateQueue}
+              >
+                OK
+              </button>
+            </div>
+          )}
           <div className="chunk">
             {data.map((v: CardProps, i: number) => <ProfileCard key={i} {...v} />)}
           </div>
@@ -92,6 +202,7 @@ export default function HomePage() {
 function stringTimeRemaining(time: Date): string {
   const td = new Date(2021, 9, 16, 16).getTime() - time.getTime();
   if (td < 0) return '00 : 00 : 00'
+
   const tr = new Date(td);
   return `${(24 * tr.getDate() + tr.getHours()).toString().padStart(3)} : 
     ${tr.getMinutes().toString().padStart(2, '0')} : 

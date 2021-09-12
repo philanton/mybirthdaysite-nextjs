@@ -132,7 +132,9 @@ export default function SurveyContent({ session }: SurveyProps) {
         </div>
         <form id="survey-form" onSubmit={(e: SyntheticEvent) => {
           e.preventDefault();
-          updateProfile();
+          if (new Date() < new Date(2021, 8, 12, 16)) {
+            updateProfile();
+          }
         }}>
           <div className="chunk flex justify-center">
             <Avatar

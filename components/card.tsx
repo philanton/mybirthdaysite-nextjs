@@ -7,6 +7,8 @@ export interface CardProps {
   imageUrl: string;
   alco: string;
   wishes: string;
+  queue: number;
+  stageName: string;
 }
 
 export default function ProfileCard(props: CardProps) {
@@ -19,7 +21,6 @@ export default function ProfileCard(props: CardProps) {
   async function downloadImage(path: string) {
     try {
       const { data, error } = await supabase.storage.from('avatars').download(path);
-      console.log(data, error);
       if (error) {
         throw error
       }
@@ -29,8 +30,13 @@ export default function ProfileCard(props: CardProps) {
       console.log('Error downloading image: ', error.message)
     }
   }
+
   return (
-    <div className="mx-0 sm:mx-16 my-4 sm:my-8 border-4 border-yellow-400 rounded-3xl bg-white">
+    <div className={
+      `mx-0 sm:mx-16 my-4 sm:my-8 border-4 
+      border-yellow-400 rounded-3xl overflow-hidden
+      bg-indigo-${props.queue === 0 ? 2 : 3}00`
+    }>
       <div className="p-4 flex items-stretch">
         <div className="mr-4 w-24 sm:w-auto h-24 sm:h-auto object-contain">
           {avatarUrl ?
@@ -44,25 +50,38 @@ export default function ProfileCard(props: CardProps) {
               height={160}
             />
           }
-        </div> {/* profile image */}
+        </div>
         <div className="flex flex-grow flex-col justify-around">
           <div className="text-2xl sm:text-4xl">
             {props.name || "NoName"}
-          </div> {/* name */}
+          </div>
           <div className="border-t-4 border-yellow-400" />
           <div className="text-2xl sm:text-4xl">
             {props.alco}
-          </div> {/* alco */}
+          </div>
         </div>
       </div>
+      {props.queue !== 0 && (
+        <>
+          <div className="border-t-4 border-yellow-400" />
+          <div className="flex p-4 items-center bg-indigo-300">
+            <div className="py-1 px-3 bg-indigo-400 text-white rounded-lg text-center">
+              {props.queue || "0"}
+            </div>
+            <div className="flex-grow text-center">
+              Stage: {props.stageName || "Boring"}
+            </div>
+          </div>
+        </>
+      )}
       {props.wishes && (
         <>
           <div className="border-t-4 border-yellow-400" />
-          <div className="p-4">
+          <div className="p-4 bg-purple-400">
             {props.wishes}
           </div>
         </>
-      )} {/* wishes */}
+      )}
     </div>
   );
 }
